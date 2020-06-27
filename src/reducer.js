@@ -1,11 +1,11 @@
-import {DECREASE, INCREASE, CLEAR_CART, REMOVE, GET_TOTAL, GET_AMOUNT} from "./actions";
+import {DECREASE, INCREASE, CLEAR_CART, REMOVE, GET_TOTALS} from "./actions";
 
 export default function reducer (state, action){
   switch (action.type){
     case CLEAR_CART:
       return {...state, cart:[]};
     case INCREASE:
-    const tempCart =  state.cart.map(cartItme => {
+    let tempCart =  state.cart.map(cartItme => {
       if(cartItme.id === action.payload.id){
         cartItme= {...cartItme, amount: cartItme.amount +1}
       }
@@ -14,16 +14,39 @@ export default function reducer (state, action){
     return {...state, cart:tempCart}
       
     case DECREASE:
-     const deCart =  state.cart.map(cartItme => {
-       
-        if(cartItme.deCartid === action.payload.id){
-          cartItme= {...cartItme, amount: cartItme.amount -1}
-        }
-        return cartItme
-      })
-      return {...state, cart:deCart}
+     let tempdCart = []
+     
+        if( action.payload.amount===1){ 
+                 
+              tempdCart=  state.cart.filter(cartItem => cartItem.id !== action.payload.id)
+            }else{
+              tempdCart =  state.cart.map(cartItme => {
+                if(cartItme.id === action.payload.id){
+                  cartItme= {...cartItme, amount: cartItme.amount -1}
+                }
+                return cartItme
+              })
+            }
+                   
+      return {...state, cart:tempdCart};
     case REMOVE:
       return {...state, cart: state.cart.filter(cartItem => cartItem.id !== action.payload.id)}
+    case GET_TOTALS:
+      let {total, amount}= state.cart.reduce((cartTotal, cartItem)=>{
+        const { price, amount} = cartItem;
+        const itemTotal = price*amount;
+
+        cartTotal.total += itemTotal;
+        cartTotal.amount += amount;
+
+        return cartTotal;
+      },
+      {
+        total: 0,
+        amount: 0
+      });
+      total = parseFloat(total.toFixed(2));
+      return {...state, total, amount}
     default:
       return state; 
   }

@@ -33,10 +33,10 @@ const CartItem = ({ img, title, price, amount, remove, increase, decrease }) => 
 };
 
 function mapDispatchToProps(dispatch, ownPass){
-  const {id }=ownPass
+  const {id, amount }=ownPass
   return {remove: ()=> dispatch({ type: REMOVE, payload:{id} }),
-  increase: ()=> dispatch({ type: INCREASE, payload:{id} }),
-  decrease: ()=> dispatch({ type: DECREASE, payload:{id} })
+  increase: ()=> dispatch({ type: INCREASE, payload:{id, amount} }),
+  decrease: ()=> dispatch({ type: DECREASE, payload:{id, amount} })
 }
 }
 
